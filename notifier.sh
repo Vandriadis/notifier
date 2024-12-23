@@ -2,7 +2,7 @@
 
 # Configuration
 WATCH_DIR="/Users/pupkin/Downloads"     # Directory to monitor
-LOG_FILE="/Users/vandriadis/Desktop/work/bash_scripts/dir_changes_notification/directory_watcher.log"   # Log file to record changes
+LOG_FILE="/Users/pupkin/Desktop/work/bash_scripts/dir_changes_notification/directory_watcher.log"   # Log file to record changes
 TELEGRAM_BOT_TOKEN="81550xxxxx:xxxxxxxxxxxxxxxxKtWuN14G6IiPanKgKb54"
 TELEGRAM_CHAT_ID="365xxxx24"
 
