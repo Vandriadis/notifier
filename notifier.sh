@@ -1,14 +1,20 @@
 #!/bin/bash
 
 # Configuration
-WATCH_DIR="/Users/pupkin/Downloads"     # Directory to monitor
-LOG_FILE="/Users/pupkin/Desktop/work/bash_scripts/dir_changes_notification/directory_watcher.log"   # Log file to record changes
-TELEGRAM_BOT_TOKEN="81550xxxxx:xxxxxxxxxxxxxxxxKtWuN14G6IiPanKgKb54"
-TELEGRAM_CHAT_ID="365xxxx24"
+WATCH_DIR="/Users/pupkin/Downloads"                                                               # Directory to monitor
+LOG_FILE="/Users/pupkin/Desktop/work/bash_scripts/dir_changes_notification/directory_watcher.log" # Log file to record changes
+TELEGRAM_BOT_TOKEN="815505xxxx:xxxxxxxxxxxxuN14G6IiPanKgKb54"
+TELEGRAM_CHAT_ID="36xxxxx24"
+EMAIL_RECIPIENT="pupkin@gmail.com"
+EMAIL_SENDER="pupkin@gmail.com"
+SMTP_SERVER="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="pupkin@gmail.com"
+SMTP_PASS="cnxx xxxx xxxx xxbz"
 
 # Ensure dependencies are installed
 check_dependencies() {
-    local deps=("fswatch" "curl")
+    local deps=("fswatch" "curl" "mail")
     for dep in "${deps[@]}"; do
         if ! command -v "$dep" >/dev/null; then
             printf "Error: %s is not installed.\n" "$dep" >&2
@@ -21,7 +27,10 @@ check_dependencies() {
 # Initialize log file
 init_log_file() {
     if [[ ! -f "$LOG_FILE" ]]; then
-        touch "$LOG_FILE" || { printf "Error: Cannot create log file at %s\n" "$LOG_FILE" >&2; return 1; }
+        touch "$LOG_FILE" || {
+            printf "Error: Cannot create log file at %s\n" "$LOG_FILE" >&2
+            return 1
+        }
     fi
     return 0
 }
@@ -32,6 +41,19 @@ notify_telegram() {
     if ! curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
         -d "chat_id=$TELEGRAM_CHAT_ID" -d "text=$message" >/dev/null; then
         printf "Error: Failed to send Telegram notification.\n" >&2
+    fi
+}
+
+# Send notification via email
+notify_email() {
+    local subject="$1"
+    local body="$2"
+    sendemail -f "$EMAIL_SENDER" -t "$EMAIL_RECIPIENT" -u "$subject" -m "$body" \
+        -s "$SMTP_SERVER:$SMTP_PORT" -xu "$SMTP_USER" -xp "$SMTP_PASS" -o tls=yes
+    if [ $? -eq 0 ]; then
+        echo "Email sent successfully"
+    else
+        echo "Failed to send email"
     fi
 }
 
@@ -56,7 +78,7 @@ monitor_directory() {
         # Log the change
         local log_entry
         log_entry="[$timestamp] $event_type: $event"
-        printf "%s\n" "$log_entry" >> "$LOG_FILE"
+        printf "%s\n" "$log_entry" >>"$LOG_FILE"
 
         # Construct notification message
         local notification="Directory Watcher Notification
@@ -67,9 +89,11 @@ monitor_directory() {
 
         # Send Telegram notification
         notify_telegram "$notification"
+        echo "Sending email notification..."
+        notify_email "Directory Change Notification" "$notification"
+    
     done
 }
-
 
 # Main function
 main() {
