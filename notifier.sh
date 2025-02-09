@@ -3,14 +3,14 @@
 # Configuration
 WATCH_DIR="/Users/pupkin/Downloads"                                                               # Directory to monitor
 LOG_FILE="/Users/pupkin/Desktop/work/bash_scripts/dir_changes_notification/directory_watcher.log" # Log file to record changes
-TELEGRAM_BOT_TOKEN="815505xxxx:xxxxxxxxxxxxuN14G6IiPanKgKb54"
-TELEGRAM_CHAT_ID="36xxxxx24"
+TELEGRAM_BOT_TOKEN=""
+TELEGRAM_CHAT_ID=""
 EMAIL_RECIPIENT="pupkin@gmail.com"
 EMAIL_SENDER="pupkin@gmail.com"
 SMTP_SERVER="smtp.gmail.com"
 SMTP_PORT="587"
 SMTP_USER="pupkin@gmail.com"
-SMTP_PASS="cnxx xxxx xxxx xxbz"
+SMTP_PASS=""
 
 # Ensure dependencies are installed
 check_dependencies() {
